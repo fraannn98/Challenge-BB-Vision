@@ -1,12 +1,10 @@
 import requests
 import json
 import math
-from bs4 import BeautifulSoup
 
 def get_id(url):
-    peliculas = []
+    movie_list = []
     url1 = 'https://yts.mx/api/v2/movie_details.json'
-    # while(number_page != 0):
     response = requests.get(url, params = {'limit': 50})
     if response.status_code == 200:
         payload = response.json()
@@ -27,11 +25,11 @@ def get_id(url):
             for j in movies:
                 id = j['id']
                 print('Page: ', i, 'Movie_id: ', id)
-                pelicula = get_movies(url1,id)
-                peliculas.append(pelicula)		
+                movie = get_movies(url1,id)
+                movie_list.append(movie)		
     
     with open('movies.json', 'w') as f:
-	    json.dump(peliculas, f, indent=4)
+	    json.dump(movie_list, f, indent=4)
 
 def get_movies(url,id, offset = 0):
     d = {}
@@ -51,10 +49,6 @@ def get_movies(url,id, offset = 0):
         d['likes'] = datas['movie'].get('like_count')
         d['idioma'] = datas['movie'].get('language')
         d['duracion'] = datas['movie'].get('runtime')
-        #respuesta = requests.get(d['url'])
-        # soup = BeautifulSoup(respuesta.content,"html.parser")
-        # comment =  soup.find_all('p', id = 'movie-comments')
-        # print(comment)
     return d		
 
 url = 'https://yts.mx/api/v2/list_movies.json'
