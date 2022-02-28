@@ -2,6 +2,8 @@ import requests
 import json
 import math
 
+#La función get_id extrae el ID de cada película y lo utiliza como parámetro de la función get_movies
+#para obtener un diccionario de cada película de la plataforma con sus metadatos e ir almacenando cada diccionario en una lista.
 def get_id(url):
     movie_list = []
     url1 = 'https://yts.mx/api/v2/movie_details.json'
@@ -9,31 +11,32 @@ def get_id(url):
     if response.status_code == 200:
         payload = response.json()
         datas = payload.get('data',[])
-        if datas:
-            movies_count = datas['movie_count']
-            limit = datas['limit']            
-    if movies_count%limit != 0:
-        number_page = math.floor(movies_count/limit) + 1
-    else:
-        number_page = movies_count/limit 
+    	if datas:
+        	movies_count = datas['movie_count']
+        	limit = datas['limit']            
+    		if movies_count%limit != 0:
+        		number_page = math.floor(movies_count/limit) + 1
+   		else:
+        		number_page = movies_count/limit 
     for i in range(1,number_page + 1):       
         response = requests.get(url, params = {'page':i, 'limit': limit})
-        payload = response.json()
-        datas = payload.get('data',[])
-        if datas:
-            movies = datas['movies']                
-            for j in movies:
-                id = j['id']
-                print('Page: ', i, 'Movie_id: ', id)
-                movie = get_movies(url1,id)
-                movie_list.append(movie)		
-    
+        if response.status_code == 200:
+	    payload = response.json()
+            datas = payload.get('data',[])
+            if datas:
+            	movies = datas['movies']                
+        	for j in movies:
+           		id = j['id']
+            movie = get_movies(url1,id) #En la variable movie almacenamos el diccionario que devuelve la función get_movies
+            movie_list.append(movie)	#y lo agregamos a la lista movie_list.	
+   
+#Con la lista completa con todos los contenidos de la plataforma, generamos el archivo json.
     with open('movies.json', 'w') as f:
 	    json.dump(movie_list, f, indent=4)
 
-def get_movies(url,id, offset = 0):
+#La función get_movies devuelve un diccionario con todos los metadatos de la película que pasemos como parámetro con el ID
+def get_movies(url,id):
     d = {}
-    args = {'offset': offset} if offset else{}
     response = requests.get(url, params = {'movie_id':id})
     if response.status_code == 200:
         payload = response.json()
