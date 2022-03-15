@@ -24,7 +24,7 @@ def get_id(url_list,url_details,url_comments):
                 for j in movies:
                     id = j['id']
                     movie = get_movies(url_details,id,url_comments) #En la variable movie almacenamos el diccionario que devuelve la función get_movies
-                    movie_list.append(movie)	#y lo agregamos a la lista movie_list.	
+                    movie_list.append(movie)			    #y lo agregamos a la lista movie_list.	
         print("Página número:",i)
     return movie_list           
 
@@ -37,17 +37,17 @@ def get_movies(url_details,id,url_comments):
         payload = response.json()
         datas = payload.get('data',[])
         d['id'] = datas['movie'].get('id')
-        d['titulo'] = datas['movie'].get('title')
+        d['title'] = datas['movie'].get('title')
         d['year'] = datas['movie'].get('year')
-        d['genero'] = datas['movie'].get('genres')	
-        d['sinopsis'] = datas['movie'].get('description_full')
+        d['genres'] = datas['movie'].get('genres')	
+        d['synopsis'] = datas['movie'].get('description_full')
         d['url'] = datas['movie'].get('url')
         d['rating']	= datas['movie'].get('rating')
-        d['descargas'] = datas['movie'].get('download_count')
+        d['downloads'] = datas['movie'].get('download_count')
         d['likes'] = datas['movie'].get('like_count')
-        d['idioma'] = datas['movie'].get('language')
-        d['duracion'] = datas['movie'].get('runtime')
-        # d['comentarios'] = get_comments(id,url_comments)
+        d['language'] = datas['movie'].get('language')
+        d['runtime'] = datas['movie'].get('runtime')
+        # d['comments'] = get_comments(id,url_comments)
     return d	
 
 #la función get_comments devuelve los comentarios de cada película (al no funcionar el endpoint, dejo comentada la función)
